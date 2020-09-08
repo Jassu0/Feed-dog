@@ -15,7 +15,7 @@ function setup(){
     database = firebase.database();
     createCanvas(1000,500);
     dog = createSprite(850,300,150,150);
-    dog.addImage(hungry);
+    //dog.addImage(hungry);
     dog.scale = 0.2;
     foodstock = database.ref('Food');
     foodstock.on("value",readstock);
@@ -25,7 +25,7 @@ function setup(){
     feed.mousePressed(feeddog);
     addfood = createButton("add food");
     addfood.position(600, 150);
-    addfood.mousePressed(addfood);
+    addfood.mousePressed(addFoods);
     var readstate = database.ref('gamestate');
     readstate.on("value", function(data) {
         gamestate = data.val();
@@ -52,8 +52,9 @@ function draw(){
     if(gamestate != "hungry") {
        //feed.hide();
         //addfood.hide();
-        //var time = hour();
-        var time = 9;
+        var time = hour();
+       // var time = 24;
+        console.log(gamestate);
         if(time == lastfed+1) {
             update("living");
             dog.addImage(livingroom);
@@ -70,6 +71,10 @@ function draw(){
             update("hungry");
             dog.addImage(hungry);
         }
+        if(gamestate == "play") {
+            dog.addImage(garden);
+        }
+       // showDog();
     }
     drawSprites();
     }
@@ -110,4 +115,18 @@ function update(state) {
     database.ref('/').update({
         gamestate: state
     });
+}
+function showDog() {
+    switch (gamestate) {
+        case "hungry": dog.addImage(hungry);
+        break;
+        case "play": dog.addImage(garden);
+        break;
+        case "washroom": dog.addImage(washroom);
+        break;
+        case "living": dog.addImage(livingroom);
+        break;
+        case "bed": dog.addImage(bedroom);
+        break;
+    }
 }
